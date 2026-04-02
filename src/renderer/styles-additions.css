@@ -1,0 +1,258 @@
+/* ===== SCENE CONTROLS ===== */
+.scene-controls {
+  display: flex;
+  gap: 8px;
+  margin-right: 16px;
+  padding-right: 16px;
+  border-right: 1px solid var(--glass-border);
+}
+
+.scene-btn {
+  width: 32px;
+  height: 32px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: var(--transition-fast);
+}
+
+.scene-btn:hover {
+  background: var(--glass-bg-hover);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ===== SCENE MODAL ===== */
+.scene-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.scene-modal:not(.hidden) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.scene-modal-content {
+  background: var(--bg-mid);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.scene-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.scene-modal-header h3 {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.scene-modal-close {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 28px;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: var(--transition-fast);
+}
+
+.scene-modal-close:hover {
+  background: var(--glass-bg-hover);
+  color: var(--text-primary);
+}
+
+.scene-modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.scene-input-group {
+  margin-bottom: 20px;
+}
+
+.scene-input-group label {
+  display: block;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  font-weight: 400;
+}
+
+.scene-input-group input {
+  width: 100%;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  transition: var(--transition-fast);
+}
+
+.scene-input-group input:focus {
+  outline: none;
+  border-color: rgba(150, 100, 255, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.scene-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.scene-item {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.scene-item:hover {
+  background: var(--glass-bg-hover);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.scene-item-name {
+  font-size: 14px;
+  color: var(--text-primary);
+  font-weight: 400;
+}
+
+.scene-item-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.scene-item-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  transition: var(--transition-fast);
+}
+
+.scene-item-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.scene-save-btn {
+  width: 100%;
+  background: linear-gradient(135deg, rgba(150, 100, 255, 0.3), rgba(100, 150, 255, 0.3));
+  border: 1px solid rgba(150, 100, 255, 0.5);
+  border-radius: 8px;
+  padding: 12px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.scene-save-btn:hover {
+  background: linear-gradient(135deg, rgba(150, 100, 255, 0.4), rgba(100, 150, 255, 0.4));
+  border-color: rgba(150, 100, 255, 0.7);
+}
+
+/* ===== DYNAMIC BACKGROUND ===== */
+body.time-morning {
+  background: radial-gradient(ellipse at 50% 40%, #4a5f8f 0%, #2d3e5e 35%, #1a2438 70%, #0d1420 100%);
+}
+
+body.time-morning::before {
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(255, 180, 100, 0.25) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 60%, rgba(100, 150, 255, 0.15) 0%, transparent 50%);
+}
+
+body.time-afternoon {
+  background: radial-gradient(ellipse at 50% 40%, #3d4a6f 0%, #252e45 35%, #15192d 70%, #0a0c18 100%);
+}
+
+body.time-afternoon::before {
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(255, 200, 120, 0.2) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 60%, rgba(120, 160, 255, 0.12) 0%, transparent 50%);
+}
+
+body.time-evening {
+  background: radial-gradient(ellipse at 50% 40%, #1a1245 0%, #0d0b2e 35%, #080816 70%, #050510 100%);
+}
+
+body.time-night {
+  background: radial-gradient(ellipse at 50% 40%, #0d0820 0%, #060510 35%, #020308 70%, #000000 100%);
+}
+
+body.time-night::before {
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(60, 30, 100, 0.3) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 60%, rgba(40, 60, 120, 0.2) 0%, transparent 50%);
+}
+
+/* ===== WEATHER EFFECTS ===== */
+.weather-rain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.rain-drop {
+  position: absolute;
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(to bottom, transparent, rgba(150, 180, 255, 0.3));
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh);
+  }
+}

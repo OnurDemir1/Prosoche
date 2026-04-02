@@ -1,0 +1,42 @@
+{
+  "name": "prosoche",
+  "version": "1.0.0",
+  "description": "Premium Pomodoro Timer & Ambient Sound App",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "check": "node --check src/main/main.js && node --check src/renderer/preload.js && node --check src/renderer/app.js",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --win nsis"
+  },
+  "author": "Onur",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OnurDemir1/Prosoche.git"
+  },
+  "bugs": {
+    "url": "https://github.com/OnurDemir1/Prosoche/issues"
+  },
+  "homepage": "https://github.com/OnurDemir1/Prosoche",
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^24.13.3",
+    "png-to-ico": "^3.0.1",
+    "sharp": "^0.34.5"
+  },
+  "build": {
+    "appId": "com.onur.prosoche",
+    "productName": "Prosoche",
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "Prosoche-Setup-${version}.${ext}"
+    }
+  }
+}

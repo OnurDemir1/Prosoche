@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prosoche</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles-additions.css">
+</head>
+<body>
+  <!-- Custom titlebar drag region -->
+  <div class="titlebar" id="titlebar">
+    <div class="window-controls">
+      <button class="win-btn" id="btn-minimize" title="Minimize">
+        <svg width="12" height="12" viewBox="0 0 12 12"><line x1="2" y1="6" x2="10" y2="6" stroke="currentColor" stroke-width="1.2"/></svg>
+      </button>
+      <button class="win-btn" id="btn-maximize" title="Maximize">
+        <svg width="12" height="12" viewBox="0 0 12 12"><rect x="2" y="2" width="8" height="8" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
+      </button>
+      <button class="win-btn win-close" id="btn-close" title="Close">
+        <svg width="12" height="12" viewBox="0 0 12 12"><line x1="2" y1="2" x2="10" y2="10" stroke="currentColor" stroke-width="1.2"/><line x1="10" y1="2" x2="2" y2="10" stroke="currentColor" stroke-width="1.2"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Bokeh background -->
+  <div class="bokeh-bg">
+    <div class="bokeh-circle c1"></div>
+    <div class="bokeh-circle c2"></div>
+    <div class="bokeh-circle c3"></div>
+    <div class="bokeh-circle c4"></div>
+    <div class="bokeh-circle c5"></div>
+    <div class="bokeh-circle c6"></div>
+    <div class="bokeh-circle c7"></div>
+  </div>
+
+  <!-- Mode Switcher -->
+  <div class="mode-switcher">
+    <button class="mode-btn active" data-mode="clock" id="mode-clock">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+      </svg>
+      <span>Clock</span>
+    </button>
+    <button class="mode-btn" data-mode="pomodoro" id="mode-pomodoro">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="13" r="9"/><path d="M12 4V2"/><path d="M9 1h6"/>
+      </svg>
+      <span>Pomodoro</span>
+    </button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Clock View -->
+    <div class="view clock-view active" id="clock-view">
+      <div class="greeting" id="greeting">GOOD AFTERNOON</div>
+      <div class="date-display" id="date-display">Thursday, January 29</div>
+      <div class="clock-time">
+        <span class="clock-digits" id="clock-digits">2:28</span>
+        <span class="clock-ampm" id="clock-ampm">PM</span>
+      </div>
+    </div>
+
+    <!-- Pomodoro View -->
+    <div class="view pomodoro-view" id="pomodoro-view">
+      <!-- Settings Panel (shown when idle) -->
+      <div class="pomo-settings" id="pomo-settings">
+        <div class="preset-row">
+          <button class="preset-btn active" data-preset="classic" id="preset-classic">
+            <span class="preset-label">Classic</span>
+            <span class="preset-detail">25/5 · 4 sessions</span>
+          </button>
+          <button class="preset-btn" data-preset="long" id="preset-long">
+            <span class="preset-label">Long</span>
+            <span class="preset-detail">50/10 · 2 sessions</span>
+          </button>
+          <button class="preset-btn" data-preset="custom" id="preset-custom">
+            <span class="preset-label">Custom</span>
+            <span class="preset-detail">Your own rules</span>
+          </button>
+        </div>
+
+        <!-- Custom settings -->
+        <div class="custom-settings hidden" id="custom-settings">
+          <div class="custom-field">
+            <label>Work</label>
+            <div class="custom-input-wrap">
+              <button class="adj-btn" data-target="custom-work" data-dir="-1">−</button>
+              <input class="custom-value" id="custom-work" type="number" min="1" max="120" step="1" value="25" inputmode="numeric">
+              <button class="adj-btn" data-target="custom-work" data-dir="1">+</button>
+            </div>
+            <span class="custom-unit">dk</span>
+          </div>
+          <div class="custom-field">
+            <label>Break</label>
+            <div class="custom-input-wrap">
+              <button class="adj-btn" data-target="custom-break" data-dir="-1">−</button>
+              <input class="custom-value" id="custom-break" type="number" min="1" max="60" step="1" value="5" inputmode="numeric">
+              <button class="adj-btn" data-target="custom-break" data-dir="1">+</button>
+            </div>
+            <span class="custom-unit">dk</span>
+          </div>
+          <div class="custom-field">
+            <label>Session</label>
+            <div class="custom-input-wrap">
+              <button class="adj-btn" data-target="custom-sessions" data-dir="-1">−</button>
+              <input class="custom-value" id="custom-sessions" type="number" min="1" max="12" step="1" value="4" inputmode="numeric">
+              <button class="adj-btn" data-target="custom-sessions" data-dir="1">+</button>
+            </div>
+          </div>
+        </div>
+
+        <button class="start-btn" id="start-pomo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="6,3 20,12 6,21"/>
+          </svg>
+          <span>Start Focus</span>
+        </button>
+      </div>
+
+      <!-- Timer Display (shown when running) -->
+      <div class="pomo-timer hidden" id="pomo-timer">
+        <div class="timer-status" id="timer-status">FOCUS</div>
+        <div class="timer-circle-wrap">
+          <svg class="timer-circle" viewBox="0 0 200 200">
+            <circle class="timer-track" cx="100" cy="100" r="90" />
+            <circle class="timer-progress" cx="100" cy="100" r="90" id="timer-progress" />
+          </svg>
+          <div class="timer-digits" id="timer-digits">25:00</div>
+        </div>
+        <div class="session-info" id="session-info">Session 1 / 4</div>
+        <div class="timer-controls">
+          <button class="ctrl-btn" id="ctrl-reset" title="Reset">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 1 1 3 6.7"/><polyline points="3 22 3 16 9 16"/>
+            </svg>
+          </button>
+          <button class="ctrl-btn ctrl-play" id="ctrl-play" title="Play/Pause">
+            <svg class="icon-play" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="6,3 20,12 6,21"/>
+            </svg>
+            <svg class="icon-pause hidden" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="5" y="3" width="4" height="18" rx="1"/><rect x="15" y="3" width="4" height="18" rx="1"/>
+            </svg>
+          </button>
+          <button class="ctrl-btn" id="ctrl-skip" title="Skip">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5,4 15,12 5,20" fill="currentColor"/><line x1="19" y1="5" x2="19" y2="19"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sound Bar -->
+  <div class="sound-bar" id="sound-bar">
+    <div class="scene-controls">
+      <button class="scene-btn" id="save-scene-btn" title="Sahneyi Kaydet">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+          <polyline points="17 21 17 13 7 13 7 21"/>
+          <polyline points="7 3 7 8 15 8"/>
+        </svg>
+      </button>
+      <button class="scene-btn" id="load-scene-btn" title="Sahne Yükle">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M3 3h18v18H3z"/>
+          <path d="M9 9h6v6H9z"/>
+        </svg>
+      </button>
+    </div>
+    <div class="master-volume-controls">
+      <button class="master-volume-toggle" id="master-volume-toggle" title="Master Volume">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+      </button>
+      <div class="master-volume-panel hidden" id="master-volume-panel">
+        <div class="master-volume-slider-wrap">
+          <input type="range" class="master-volume-slider" id="quick-master-volume" min="0" max="100" value="80">
+          <span class="master-volume-val" id="quick-master-volume-val">80%</span>
+        </div>
+        <button class="stop-all-sounds-btn" id="stop-all-sounds-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="6" y="6" width="12" height="12"/>
+          </svg>
+          <span>Stop All</span>
+        </button>
+      </div>
+    </div>
+    <div class="sound-categories" id="sound-categories">
+      <!-- Rain -->
+      <div class="sound-category" data-category="rain">
+        <button class="cat-btn" data-category="rain" title="Rain">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round">
+            <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"/>
+            <line x1="8" y1="16" x2="8" y2="20"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="16" y1="16" x2="16" y2="20"/>
+          </svg>
+        </button>
+      </div>
+      <!-- Nature -->
+      <div class="sound-category" data-category="nature">
+        <button class="cat-btn" data-category="nature" title="Nature">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 8C8 10 5.9 16.17 3.82 21.34L3.63 21.99 13 13"/>
+            <path d="M20.2 2.8c.6 1.4.7 3 .3 4.5s-1.3 2.9-2.4 3.9c-1.1 1-2.5 1.6-4 1.8-1.5.2-3-.1-4.3-.8"/>
+          </svg>
+        </button>
+      </div>
+      <!-- Animals -->
+      <div class="sound-category" data-category="animals">
+        <button class="cat-btn" data-category="animals" title="Animals">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 22c3-5 4-10 2-15"/><path d="M22 22c-3-5-4-10-2-15"/>
+            <path d="M7 7c0-3 2.5-5 5-5s5 2 5 5c0 4-5 7-5 10-0-3-5-6-5-10z"/>
+          </svg>
+        </button>
+      </div>
+      <!-- Places -->
+      <div class="sound-category" data-category="places">
+        <button class="cat-btn" data-category="places" title="Places">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/>
+            <path d="M9 21v-4h6v4"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/>
+          </svg>
+        </button>
+      </div>
+      <!-- Things -->
+      <div class="sound-category" data-category="things">
+        <button class="cat-btn" data-category="things" title="Things">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
+      </div>
+      <!-- Transport -->
+      <div class="sound-category" data-category="transport">
+        <button class="cat-btn" data-category="transport" title="Transport">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="6" width="15" height="12" rx="2"/><path d="M16 10h4l3 3v5h-7V10z"/>
+            <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+        </button>
+      </div>
+      <!-- Urban -->
+      <div class="sound-category" data-category="urban">
+        <button class="cat-btn" data-category="urban" title="Urban">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="1" y1="22" x2="23" y2="22"/>
+            <rect x="2" y="6" width="6" height="16"/><rect x="9" y="2" width="6" height="20"/><rect x="16" y="9" width="6" height="13"/>
+            <line x1="4" y1="10" x2="6" y2="10"/><line x1="4" y1="14" x2="6" y2="14"/><line x1="11" y1="6" x2="13" y2="6"/><line x1="11" y1="10" x2="13" y2="10"/><line x1="11" y1="14" x2="13" y2="14"/><line x1="18" y1="13" x2="20" y2="13"/><line x1="18" y1="17" x2="20" y2="17"/>
+          </svg>
+        </button>
+      </div>
+      <!-- Noise -->
+      <div class="sound-category" data-category="noise">
+        <button class="cat-btn" data-category="noise" title="Noise">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round">
+            <path d="M2 12c1-3 3-3 4 0s3 3 4 0 3-3 4 0 3 3 4 0 3-3 4 0"/>
+          </svg>
+        </button>
+      </div>
+      <!-- Binaural -->
+      <div class="sound-category" data-category="binaural">
+        <button class="cat-btn" data-category="binaural" title="Binaural">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+            <path d="M12 6c-2.2 0-4 1.8-4 4 0 3 4 8 4 8s4-5 4-8c0-2.2-1.8-4-4-4z"/>
+            <circle cx="12" cy="10" r="1.5" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sound Drawer (expanded category) -->
+  <div class="sound-drawer hidden" id="sound-drawer">
+    <div class="drawer-header">
+      <span class="drawer-title" id="drawer-title">Rain</span>
+      <button class="drawer-close" id="drawer-close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="drawer-sounds" id="drawer-sounds">
+      <!-- Dynamically populated -->
+    </div>
+  </div>
+
+  <!-- Daily Zen Quote -->
+  <div class="zen-quote" id="zen-quote"></div>
+
+  <!-- Scene Save/Load Modal -->
+  <div class="scene-modal hidden" id="scene-modal">
+    <div class="scene-modal-content">
+      <div class="scene-modal-header">
+        <h3 id="scene-modal-title">Sahneyi Kaydet</h3>
+        <button class="scene-modal-close" id="scene-modal-close">×</button>
+      </div>
+      <div class="scene-modal-body" id="scene-modal-body">
+        <!-- Dynamically populated -->
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Settings Button (bottom-right) -->
+  <button class="settings-btn" id="settings-btn" title="Ayarlar">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+  </button>
+
+  <!-- Settings Modal -->
+  <div class="settings-overlay hidden" id="settings-overlay">
+    <div class="settings-modal" id="settings-modal">
+      <div class="settings-header">
+        <h2 class="settings-title">Settings</h2>
+        <button class="settings-close" id="settings-close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Settings Tabs -->
+      <div class="settings-tabs">
+        <button class="settings-tab active" data-tab="general">General</button>
+        <button class="settings-tab" data-tab="pomodoro">Pomodoro</button>
+        <button class="settings-tab" data-tab="about">About</button>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="settings-content">
+
+        <!-- GENERAL TAB -->
+        <div class="tab-panel active" id="tab-general">
+          <div class="setting-group">
+            <div class="setting-group-title">System</div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-label">Launch on Startup</span>
+                <span class="setting-desc">Automatically start app when computer boots</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="setting-autostart">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-label">Always on Top</span>
+                <span class="setting-desc">Keep window above other applications</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="setting-always-on-top">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-label">Minimize to Tray</span>
+                <span class="setting-desc">Minimize to system tray instead of closing</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="setting-minimize-to-tray" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <div class="setting-group-title">Appearance</div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-label">Language</span>
+                <span class="setting-desc">Interface language</span>
+              </div>
+              <select class="setting-select" id="setting-language">
+                <option value="en" selected>English</option>
+                <option value="tr">Türkçe</option>
+              </select>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-label">Dynamic Background</span>
+                <span class="setting-desc">Change background by time of day</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="setting-dynamic-bg" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-label">Clock Format</span>
+                <span class="setting-desc">Time display format</span>
+              </div>
+              <select class="setting-select" id="setting-clock-format">
+                <option value="24" selected>24 Hour</option>
+                <option value="12">12 Hour</option>
+                </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- POMODORO TAB -->
+        <div class="tab-panel" id="tab-pomodoro">
+          <div class="setting-group">
+            <div class="setting-group-title">Timer</div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-label">Auto Start Break</span>
+                <span class="setting-desc">Automatically start break after work session</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="setting-auto-break" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-label">Auto Start Work</span>
+                <span class="setting-desc">Automatically start work after break</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="setting-auto-work" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-label">Long Break Interval</span>
+                <span class="setting-desc">After how many sessions to take a long break</span>
+              </div>
+              <select class="setting-select" id="setting-long-break-interval">
+                <option value="0">Off</option>
+                <option value="3">Every 3 sessions</option>
+                <option value="4" selected>Every 4 sessions</option>
+                <option value="5">Every 5 sessions</option>
+              </select>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-label">Long Break Duration</span>
+                <span class="setting-desc">Duration of long break</span>
+              </div>
+              <select class="setting-select" id="setting-long-break-duration">
+                <option value="15" selected>15 minutes</option>
+                <option value="20">20 minutes</option>
+                <option value="25">25 minutes</option>
+                <option value="30">30 minutes</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <div class="setting-group-title">Notifications</div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-label">Notification Sound</span>
+                <span class="setting-desc">Play a notification sound when time ends</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="setting-notification-sound" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-label">Desktop Notification</span>
+                <span class="setting-desc">Show system notification when time ends</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="setting-desktop-notification">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-label">Pause Sounds in Pomodoro</span>
+                <span class="setting-desc">Automatically pause ambient sounds during break</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="setting-pause-on-break">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="setting-row">
+              <div class="setting-info">
+                <span class="setting-label">Pause Sounds When Timer Stops</span>
+                <span class="setting-desc">Automatically pause ambient sounds when timer is stopped or reset</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="setting-pause-on-stop">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- ABOUT TAB -->
+        <div class="tab-panel" id="tab-about">
+          <div class="setting-group">
+            <div class="setting-group-title">Application</div>
+
+            <div class="about-card">
+              <div class="about-app-name">Prosoche</div>
+              <div class="about-version">Version 1.0.0</div>
+              <div class="about-tagline">Focus and Peace</div>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <div class="setting-group-title">Credits and License</div>
+
+            <div class="about-credit">
+              <div class="credit-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span class="credit-title-text">MIT License</span>
+              </div>
+              <div class="credit-desc">This application is distributed under the MIT License. The source code can be freely used, modified, and redistributed.</div>
+            </div>
+
+            <div class="about-credit">
+              <div class="credit-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span class="credit-title-text">Open Source Libraries</span>
+              </div>
+              <div class="credit-desc">
+                <span class="credit-lib">Electron</span> — Masaüstü uygulama çatısı<br>
+                <span class="credit-lib">Inter Font</span> — Google Fonts (OFL Lisansı)<br>
+                <span class="credit-lib">Web Audio API</span> — Tarayıcı ses sistemi
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <div class="setting-group-title">Support</div>
+
+            <div class="about-credit">
+              <div class="credit-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3a9 9 0 0 0-9 9v6a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-6a9 9 0 0 0-9-9z"/><path d="M9 12h6"/><path d="M9 16h6"/></svg>
+                <span class="credit-title-text" id="about-privacy-title">Privacy Notice</span>
+              </div>
+              <div class="credit-desc" id="about-privacy-desc">Prosoche does not send your personal data to the cloud. Settings and saved scenes are stored only on this device.</div>
+            </div>
+
+            <div class="about-actions">
+              <button class="about-action-btn" id="about-feedback-btn" type="button">Send Feedback</button>
+              <button class="about-action-btn" id="about-bug-btn" type="button">Report Bug</button>
+              <button class="about-action-btn" id="about-github-btn" type="button">GitHub Repository</button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
