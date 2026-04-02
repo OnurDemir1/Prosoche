@@ -5,10 +5,8 @@ Pomodoro timer with ambient sounds for focused work.
 ## Installer
 
 - Current version: `1.0.0`
-- Setup: `dist/Prosoche-Setup-1.0.0.exe`
-- Portable EXE: `dist/Prosoche 1.0.0.exe`
+- Setup and Portable EXE are published in GitHub Releases.
 - Build command:
-
 ```bash
 npm run dist
 npm run dist:portable
