@@ -2,6 +2,10 @@
 
 Pomodoro timer with ambient sounds for focused work.
 
+## Preview
+
+![Prosoche Preview](preview.png)
+
 ## Installer
 
 - Current version: `1.0.0`
