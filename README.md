@@ -25,12 +25,6 @@ Optional check:
 npm run check
 ```
 
-## Support
-
-- Feedback: `onurd2750@gmail.com`
-- Bug report: `https://github.com/OnurDemir1/Prosoche/issues/new`
-- Repository: `https://github.com/OnurDemir1/Prosoche`
-
 ## Privacy
 
 Prosoche stores settings and scenes locally on your device and does not send personal data to cloud services.
