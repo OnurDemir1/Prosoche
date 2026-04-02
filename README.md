@@ -6,6 +6,13 @@ Pomodoro timer with ambient sounds for focused work.
 
 ![Prosoche Preview](preview.png)
 
+## Highlights
+
+- Elegant clock + Pomodoro focus modes in one minimal interface.
+- Includes 89 ambient sound tracks across multiple categories.
+- Mix multiple sounds with independent volume control.
+- Turkish / English language support.
+
 ## Installer
 
 - Current version: `1.0.0`
