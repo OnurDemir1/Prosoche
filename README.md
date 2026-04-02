@@ -1,15 +1,17 @@
 # Prosoche
 
-Minimal Pomodoro + ambient sound desktop app.
+Pomodoro timer with ambient sounds for focused work.
 
 ## Installer
 
 - Current version: `1.0.0`
-- Installer file: `dist/Prosoche-Setup-1.0.0.exe`
+- Setup: `dist/Prosoche-Setup-1.0.0.exe`
+- Portable EXE: `dist/Prosoche 1.0.0.exe`
 - Build command:
 
 ```bash
 npm run dist
+npm run dist:portable
 ```
 
 ## Run (Development)

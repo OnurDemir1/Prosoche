@@ -1,5 +1,7 @@
 node_modules/
-dist/
+dist/*
+!dist/Prosoche-Setup-1.0.0.exe
+!dist/Prosoche\ 1.0.0.exe
 *.log
 npm-debug.log*
 yarn-debug.log*
