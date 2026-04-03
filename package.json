@@ -1,6 +1,6 @@
 {
   "name": "prosoche",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Premium Pomodoro Timer & Ambient Sound App",
   "main": "src/main/main.js",
   "scripts": {

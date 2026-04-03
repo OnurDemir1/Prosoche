@@ -15,7 +15,7 @@ Pomodoro timer with ambient sounds for focused work.
 
 ## Installer
 
-- Current version: `1.0.0`
+- Current version: `1.0.1`
 - Setup and Portable EXE are published in GitHub Releases.
 - Build command:
 ```bash
