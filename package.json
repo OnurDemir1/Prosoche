@@ -8,7 +8,8 @@
     "dev": "electron . --dev",
     "check": "node --check src/main/main.js && node --check src/renderer/preload.js && node --check src/renderer/app.js",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder --win nsis"
+    "dist": "electron-builder --win nsis",
+    "dist:portable": "electron-builder --win portable"
   },
   "author": "Onur",
   "license": "MIT",
